@@ -5,3 +5,4 @@ matplotlib
 google-generativeai
 flask==3.0.0
 werkzeug>=3.0.0
+python-dotenv

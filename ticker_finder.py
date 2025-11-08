@@ -2,6 +2,7 @@ import google.generativeai as genai
 import yfinance as yf
 import re
 from config import GEMINI_API_KEY, EXCHANGES
+import os
 
 class TickerFinder:
     """
@@ -12,6 +13,9 @@ class TickerFinder:
     def __init__(self):
         """Initialize Gemini API and configure the model"""
         try:
+            api_key = os.environ.get('GEMINI_API_KEY')
+            if not api_key:
+                raise ValueError("GEMINI_API_KEY not found in environment variables")
             genai.configure(api_key=GEMINI_API_KEY)
             self.model = genai.GenerativeModel('gemini-2.0-flash-001')
             print("✅ Gemini API configured successfully")
