@@ -4,7 +4,7 @@ A detailed 3 month forecast of stock behaviour is obtained through this project.
 ### This prediction tool is for listings on the Indian Stock Market. 
 
 
-### Concept
+## Concept
 
 For a stock entered by the user, the drift and volatility are calculated from that stock's historical data (1 year). These two parameters are used in the formula of Geometric Brownian Motion along with the present day price of the stock which is taken as the initial price. Monte Carlo simulations are implemented 100,000 times with the use of Geometric Brownian Motion to predict the price of the stock in each run with a different shock, thereby providing a comprehensive probability distribution of potential future outcomes.
 
@@ -35,12 +35,20 @@ python app.py
 
 Open your browser to the address displayed 
 
-## Optional Configuration
+### For output without UI interaction
+```bash
+python main.py
+```
+
+This will show all the outputs in the terminal and the 4 visualisations will be saved as PNGs in the current working directory.
+
+### Optional Configuration
 
 Edit `config.py` to customize:
 - `DEFAULT_NUM_SIMULATIONS = 100000` - Number of Monte Carlo paths
 - `DEFAULT_FORECAST_DAYS = 63` - Prediction period (~3 months)
 - `DEFAULT_HISTORICAL_DAYS = 252` - Historical data to analyze
+
 
 ## 📊 Features
 
@@ -65,35 +73,29 @@ Edit `config.py` to customize:
 ## 🛠️ Tech Stack
 
 ### Backend:
-
 Python
 Flask (Web Framework)
 Gunicorn (WSGI Server)
 
 ### AI & Data:
-
 Google Gemini API (AI-powered ticker lookup)
 Yahoo Finance API (Historical stock data)
 
 ### Data Processing & Analysis:
-
 NumPy (Numerical computations)
 Pandas (Data manipulation)
 Matplotlib (Visualization)
 
 ### Frontend:
-
 HTML5
 CSS3
 JavaScript (Vanilla)
 
 ### Session Management:
-
 Flask Sessions
 Browser SessionStorage
 
 ### Libraries:
-
 yfinance (Yahoo Finance data fetching)
 google-generativeai (Gemini API integration)
 werkzeug (Flask utilities)
