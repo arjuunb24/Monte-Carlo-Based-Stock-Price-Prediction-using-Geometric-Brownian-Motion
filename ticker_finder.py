@@ -21,13 +21,23 @@ class TickerFinder:
             raise
     
     def find_ticker(self, company_name):
-        """Find the Yahoo Finance ticker symbol for a company using Gemini AI"""
+        """
+        Find the Yahoo Finance ticker symbol for a company using Gemini AI
+        Now follows: User Input → Registered Company Name → Ticker
         
+        Parameters:
+        company_name (str): Company name provided by user
+        
+        Returns:
+        str: Ticker symbol with exchange suffix (.NS or .BO) or None if not found
+        """
         if not company_name or company_name.strip() == "":
             print("❌ Error: Company name cannot be empty")
             return None
         
-        # Step 1: Use Gemini to find the ticker
+        print(f"\n🔍 Step 1: Finding registered company name for '{company_name}'...")
+        
+        # Step 1: Use Gemini to find registered company name, then ticker
         ticker_candidates = self._query_gemini_for_ticker(company_name)
         
         if not ticker_candidates:
@@ -39,16 +49,18 @@ class TickerFinder:
             return None
         
         # Step 2: Validate each candidate ticker
-        print(f"\n🔎 Validating ticker candidates: {ticker_candidates}")
+        print(f"\n🔎 Step 2: Validating ticker candidates: {ticker_candidates}")
         
         for ticker in ticker_candidates:
             if self._validate_ticker(ticker):
-                # Get company info to inform user about parent company if applicable
+                # Get company info to show what was found
                 info = self.get_company_info(ticker)
                 if info:
-                    print(f"\n✅ Using: {info['name']}")
-                    if company_name.lower() not in info['name'].lower():
-                        print(f"   ℹ️  Note: '{company_name}' is associated with {info['name']}")
+                    print(f"\n✅ Successfully Matched:")
+                    print(f"   User Input: '{company_name}'")
+                    print(f"   Registered Name: {info['name']}")
+                    print(f"   Ticker: {info['ticker']}")
+                    print(f"   Exchange: {info['exchange']}")
                 return ticker
         
         # If no candidates validated
@@ -57,73 +69,105 @@ class TickerFinder:
         return None
     
     def _query_gemini_for_ticker(self, company_name):
-        """Query Gemini AI to find ticker symbol(s) for the given company"""
+        """
+        Query Gemini AI to find the registered company name first, then derive ticker
         
-        # ENHANCED PROMPT - Replace the existing prompt with this:
-        prompt = f"""You are a financial expert specializing in Indian stock markets.
+        Parameters:
+        company_name (str): Company name to search for
+        
+        Returns:
+        list: List of potential ticker symbols with exchange suffixes
+        """
+        # STEP 1: First ask Gemini to find the registered company name
+        name_prompt = f"""You are a financial expert specializing in Indian stock markets.
 
-    Task: Find the Yahoo Finance ticker symbol for a company listed on Indian stock exchanges (NSE or BSE).
+    Task: Find the EXACT REGISTERED COMPANY NAME for a company listed on Indian stock exchanges (NSE or BSE).
 
-    Company Name/Input: "{company_name}"
+    User Input: "{company_name}"
 
     CRITICAL INSTRUCTIONS:
 
-    1. FUZZY MATCHING - Identify the company even if the input is:
-    - Partial name (e.g., "Jio" should match "Reliance Industries" - parent company)
-    - Informal/Brand name (e.g., "Zomato" for "Zomato Limited")
-    - Abbreviated (e.g., "TCS" for "Tata Consultancy Services")
-    - Misspelled or has typos
-    - Only a subsidiary/brand name
-    - IMPORTANT: If input is a subsidiary/brand NOT directly listed, find the PARENT COMPANY ticker
-    
-    2. PARENT COMPANY LOGIC:
-    - If the company entered is NOT listed but is owned by a listed parent company, return the PARENT's ticker
+    1. FIND THE REGISTERED COMPANY NAME:
+    - Identify the official registered name of the company in Indian stock exchanges
+    - Handle partial names (e.g., "Jio" → "Reliance Industries Limited")
+    - Handle brand names (e.g., "Zomato" → "Zomato Limited")
+    - Handle abbreviations (e.g., "TCS" → "Tata Consultancy Services Limited")
+    - Handle misspellings and fuzzy matches
+
+    2. PARENT COMPANY LOGIC (VERY IMPORTANT):
+    - If the input is a subsidiary/brand NOT directly listed, find the PARENT company's registered name
+    - Use the same fuzzy matching and validation techniques
+    - ALWAYS check for and return the parent company's registered name if applicable
     - Examples:
-        * "Jio" or "Reliance Jio" → RELIANCE.NS (parent: Reliance Industries)
-        * "Big Bazaar" → FRETAIL.NS or AVL.NS (parent company)
-        * "Tanishq" → TITAN.NS (parent: Titan Company)
-        * "Swiggy" → if not listed, look for parent
+        * "Jio" or "Reliance Jio" → "Reliance Industries Limited" (parent company)
+        * "Big Bazaar" → Look for parent company's registered name
+        * "Tanishq" → "Titan Company Limited" (parent company)
     
-    3. TICKER FORMAT:
-    - NSE (preferred): Add .NS suffix (e.g., RELIANCE.NS)
-    - BSE (alternative): Add .BO suffix (e.g., RELIANCE.BO)
-    - If listed on both, provide BOTH (NSE first)
+    3. RESPONSE FORMAT (STRICT):
+    - If found: Return ONLY the exact registered company name 
+    - Example: "Reliance Industries Limited"
+    - If not found: Return ONLY "NOT_FOUND"
+    - NO explanations, NO extra text, NO ticker symbols
 
-    4. NOT FOUND HANDLING:
-    - If no match exists (company doesn't exist OR no listed parent), respond: "NOT_FOUND"
-    
-    5. RESPONSE FORMAT (STRICT):
-    - Found: Return ONLY ticker symbol(s), one per line
-    - Not found: Return ONLY "NOT_FOUND"
-    - NO explanations, NO extra text
-    
-    Example responses:
-    Input: "jio" → 
-    RELIANCE.NS
-    RELIANCE.BO
+    Examples:
+    Input: "reliance" → Reliance Industries Limited
+    Input: "jio" → Reliance Industries Limited
+    Input: "tcs" → Tata Consultancy Services Limited
+    Input: "hdfc bank" → HDFC Bank Limited
+    Input: "nonexistent company" → NOT_FOUND
 
-    Input: "hdfc bank" →
-    HDFCBANK.NS
-
-    Input: "nonexistent company" →
-    NOT_FOUND
-
-    Now find ticker for: "{company_name}"
+    Now find the registered company name for: "{company_name}"
     """
         
         try:
-            # Query Gemini
-            response = self.model.generate_content(prompt)
-            response_text = response.text.strip()
+            # Get the registered company name from Gemini
+            response = self.model.generate_content(name_prompt)
+            company_registered_name = response.text.strip()
             
-            print(f"\n📡 Gemini Response: {response_text}")
+            print(f"\n📡 Gemini Found Company Name: {company_registered_name}")
             
             # Check if company not found
-            if "NOT_FOUND" in response_text.upper():
+            if "NOT_FOUND" in company_registered_name.upper():
                 return []
             
-            # Parse the response to extract tickers
-            tickers = self._parse_ticker_response(response_text)
+            # STEP 2: Now find the ticker based on the registered company name
+            ticker_prompt = f"""You are a financial data expert for Indian stock markets.
+
+    Task: Find the Yahoo Finance ticker symbol for this EXACT company.
+
+    Registered Company Name: "{company_registered_name}"
+
+    INSTRUCTIONS:
+    1. Find the ticker symbol for this exact company on NSE or BSE
+    2. Ticker format:
+    - NSE (preferred): Add .NS suffix (e.g., RELIANCE.NS)
+    - BSE (alternative): Add .BO suffix (e.g., RELIANCE.BO)
+    3. If listed on both exchanges, provide BOTH (NSE first, then BSE)
+    4. If ticker not found, respond: "NOT_FOUND"
+
+    RESPONSE FORMAT (STRICT):
+    - Return ONLY ticker symbol(s), one per line
+    - Example for both exchanges:
+    RELIANCE.NS
+    RELIANCE.BO
+    - Example for NSE only:
+    TCS.NS
+    - NO explanations, NO extra text
+
+    Find ticker for: "{company_registered_name}"
+    """
+            
+            ticker_response = self.model.generate_content(ticker_prompt)
+            ticker_text = ticker_response.text.strip()
+            
+            print(f"📡 Gemini Found Ticker(s): {ticker_text}")
+            
+            # Check if ticker not found
+            if "NOT_FOUND" in ticker_text.upper():
+                return []
+            
+            # Parse the ticker response
+            tickers = self._parse_ticker_response(ticker_text)
             return tickers
             
         except Exception as e:

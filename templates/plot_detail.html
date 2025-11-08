@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ plot_title }} - {{ ticker }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            text-decoration: none;
+            border: 2px solid #2ecc71;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .back-button:hover {
+            background: #2ecc71;
+            color: #0a0a0a;
+            transform: translateX(-5px);
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #2ecc71;
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #2ecc71;
+            margin-bottom: 10px;
+        }
+
+        .ticker-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid #2ecc71;
+            border-radius: 20px;
+            color: #2ecc71;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .plot-container {
+            background: rgba(30, 30, 30, 0.8);
+            border: 2px solid #2ecc71;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 30px rgba(46, 204, 113, 0.2);
+        }
+
+        .plot-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            display: block;
+        }
+
+        .explanation-section {
+            background: rgba(30, 30, 30, 0.8);
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 30px;
+            line-height: 1.8;
+        }
+
+        .explanation-section h2 {
+            color: #2ecc71;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .explanation-section pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: inherit;
+            color: #e0e0e0;
+        }
+
+        .highlight {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .plot-container {
+                padding: 10px;
+            }
+
+            .explanation-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-button">← Back to Results</a>
+
+        <header>
+            <h1>{{ plot_title }}</h1>
+            <span class="ticker-badge">{{ ticker }}</span>
+        </header>
+
+        <div class="plot-container">
+            <img src="/static/{{ plot_path }}" alt="{{ plot_title }}">
+        </div>
+
+        <div class="explanation-section">
+            <h2>Detailed Analysis</h2>
+            <pre>{{ explanation }}</pre>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Stock Price Predictor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .error-container {
+            background: rgba(30, 30, 30, 0.8);
+            border: 2px solid #e74c3c;
+            border-radius: 10px;
+            padding: 40px;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(231, 76, 60, 0.3);
+        }
+
+        .error-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #e74c3c;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .error-message {
+            color: #e0e0e0;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #2ecc71;
+            color: #0a0a0a;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+        }
+
+        .tips {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .tips h3 {
+            color: #2ecc71;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .tips ul {
+            list-style-position: inside;
+            color: #ccc;
+        }
+
+        .tips li {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-icon">⚠️</div>
+        <h1>Oops! Something went wrong</h1>
+        
+        <div class="error-message">
+            {{ error }}
+        </div>
+
+        <a href="/" class="back-button">← Back to Home</a>
+
+        <div class="tips">
+            <h3>💡 Tips:</h3>
+            <ul>
+                <li>Ensure the company is listed on NSE or BSE</li>
+                <li>Try using the full company name or common abbreviation</li>
+                <li>Check your internet connection</li>
+                <li>Examples: "Reliance", "TCS", "Infosys", "HDFC Bank"</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
