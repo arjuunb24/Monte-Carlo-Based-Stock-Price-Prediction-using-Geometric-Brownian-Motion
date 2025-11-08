@@ -73,29 +73,29 @@ Edit `config.py` to customize:
 ## 🛠️ Tech Stack
 
 ### Backend:
--Python
--Flask (Web Framework)
--Gunicorn (WSGI Server)
+- Python
+- Flask (Web Framework)
+- Gunicorn (WSGI Server)
 
 ### AI & Data:
--Google Gemini API (AI-powered ticker lookup)
--Yahoo Finance API (Historical stock data)
+- Google Gemini API (AI-powered ticker lookup)
+- Yahoo Finance API (Historical stock data)
 
 ### Data Processing & Analysis:
--NumPy (Numerical computations)
--Pandas (Data manipulation)
--Matplotlib (Visualization)
+- NumPy (Numerical computations)
+- Pandas (Data manipulation)
+- Matplotlib (Visualization)
 
 ### Frontend:
--HTML5
--CSS3
--JavaScript (Vanilla)
+- HTML5
+- CSS3
+- JavaScript (Vanilla)
 
 ### Session Management:
--Flask Sessions
--Browser SessionStorage
+- Flask Sessions
+- Browser SessionStorage
 
 ### Libraries:
--yfinance (Yahoo Finance data fetching)
--google-generativeai (Gemini API integration)
--werkzeug (Flask utilities)
+- yfinance (Yahoo Finance data fetching)
+- google-generativeai (Gemini API integration)
+- werkzeug (Flask utilities)
