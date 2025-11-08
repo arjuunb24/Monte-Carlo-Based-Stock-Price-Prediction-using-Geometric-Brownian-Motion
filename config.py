@@ -1,7 +1,7 @@
 import os
 
 # API Configuration
-GEMINI_API_KEY = 'AIzaSyB5xVbLl16rKzA1dzLiUh_EdN2JiGbiaXQ'
+GEMINI_API_KEY = 'enter-key-here'
 
 # Simulation Parameters
 DEFAULT_HISTORICAL_DAYS = 252
