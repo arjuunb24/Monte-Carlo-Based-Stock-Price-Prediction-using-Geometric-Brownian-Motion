@@ -17,7 +17,7 @@ class TickerFinder:
             if not api_key:
                 raise ValueError("GEMINI_API_KEY not found in environment variables")
             genai.configure(api_key=GEMINI_API_KEY)
-            self.model = genai.GenerativeModel('gemini-2.0-flash-001')
+            self.model = genai.GenerativeModel('gemini-2.5-flash')
             print("✅ Gemini API configured successfully")
         except Exception as e:
             print(f"❌ Error configuring Gemini API: {e}")
