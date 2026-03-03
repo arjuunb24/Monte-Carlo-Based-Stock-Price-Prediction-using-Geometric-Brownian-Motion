@@ -1,7 +1,25 @@
 import yfinance as yf
+import requests
 import numpy as np
 from datetime import datetime, timedelta
 from config import DEFAULT_HISTORICAL_DAYS
+
+def _get_yf_session():
+    """
+    Return a requests Session with browser-like headers to bypass
+    Yahoo Finance's bot-blocking on cloud provider IPs (Render, AWS, etc.).
+    """
+    session = requests.Session()
+    session.headers.update({
+        'User-Agent': (
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+            'AppleWebKit/537.36 (KHTML, like Gecko) '
+            'Chrome/122.0.0.0 Safari/537.36'
+        ),
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+    })
+    return session
 
 class DataFetcher:
     """
@@ -28,9 +46,10 @@ class DataFetcher:
         """Fetch historical stock data from Yahoo Finance"""
         end_date = datetime.now()
         start_date = end_date - timedelta(days=self.historical_days + 120)  # Extra buffer
-        
+
         print(f"\n📊 Fetching data for {self.ticker}...")
-        stock = yf.Ticker(self.ticker)
+        session = _get_yf_session()
+        stock = yf.Ticker(self.ticker, session=session)
         self.data = stock.history(start=start_date, end=end_date)
         
         if self.data.empty:

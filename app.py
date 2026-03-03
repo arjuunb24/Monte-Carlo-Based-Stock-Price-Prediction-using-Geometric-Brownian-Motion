@@ -7,11 +7,25 @@ from flask import Flask, render_template, request, jsonify, session
 from werkzeug.utils import secure_filename
 import os
 import base64
+import requests
 from io import BytesIO
 import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend
 import matplotlib.pyplot as plt
 import yfinance as yf
+
+def _get_yf_session():
+    s = requests.Session()
+    s.headers.update({
+        'User-Agent': (
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+            'AppleWebKit/537.36 (KHTML, like Gecko) '
+            'Chrome/122.0.0.0 Safari/537.36'
+        ),
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+    })
+    return s
 
 from ticker_finder import TickerFinder
 from data_fetcher import DataFetcher
@@ -96,7 +110,7 @@ def run_prediction(company_name):
         # Get summary statistics
         summary = fetcher.get_summary_statistics()
         
-        company_info = yf.Ticker(ticker).info
+        company_info = yf.Ticker(ticker, session=_get_yf_session()).info
         company_full_name = company_info.get('longName', company_info.get('shortName', ticker))
 
         return {
@@ -128,9 +142,10 @@ def generate_plots_for_web(visualizer, ticker):
     dict: Paths to all generated plots
     """
     import numpy as np
-    
+    import time
+
     plot_paths = {}
-    timestamp = str(int(os.time.time())) if hasattr(os, 'time') else '1'
+    timestamp = str(int(time.time()))
     
     # Plot 1: Simulation Paths
     fig, ax = plt.subplots(figsize=(12, 7))
