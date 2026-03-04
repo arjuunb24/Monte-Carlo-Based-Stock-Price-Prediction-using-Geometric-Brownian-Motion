@@ -1,27 +1,8 @@
 import google.generativeai as genai
 import yfinance as yf
-import requests
 import re
 from config import GEMINI_API_KEY, EXCHANGES
 import os
-
-def _get_yf_session():
-    """
-    Return a requests Session with browser-like headers.
-    Yahoo Finance blocks plain requests from cloud IPs (Render, AWS, etc.);
-    spoofing a real User-Agent bypasses that restriction.
-    """
-    session = requests.Session()
-    session.headers.update({
-        'User-Agent': (
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-            'AppleWebKit/537.36 (KHTML, like Gecko) '
-            'Chrome/122.0.0.0 Safari/537.36'
-        ),
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-    })
-    return session
 
 class TickerFinder:
     """
@@ -35,12 +16,12 @@ class TickerFinder:
             api_key = os.environ.get('GEMINI_API_KEY')
             if not api_key:
                 raise ValueError("GEMINI_API_KEY not found in environment variables")
-            genai.configure(api_key=api_key)
-            self.model = genai.GenerativeModel('gemini-1.5-flash')
+            genai.configure(api_key=GEMINI_API_KEY)
+            self.model = genai.GenerativeModel('gemini-2.5-flash')
             print("✅ Gemini API configured successfully")
         except Exception as e:
             print(f"❌ Error configuring Gemini API: {e}")
-            print("Please check your GEMINI_API_KEY environment variable in Render dashboard")
+            print("Please check your API key in config.py")
             raise
     
     def find_ticker(self, company_name):
@@ -194,9 +175,7 @@ class TickerFinder:
             return tickers
             
         except Exception as e:
-            import traceback
             print(f"❌ Error querying Gemini API: {e}")
-            traceback.print_exc()
             return []
     
     def _parse_ticker_response(self, response_text):
@@ -252,44 +231,40 @@ class TickerFinder:
         """
         try:
             print(f"   Checking {ticker}...", end=" ")
-
-            # Use a browser-like session so Yahoo Finance doesn't block
-            # cloud provider IPs (Render, AWS, etc.)
-            session = _get_yf_session()
-            stock = yf.Ticker(ticker, session=session)
-
+            
+            # Try to fetch basic info from Yahoo Finance
+            stock = yf.Ticker(ticker)
+            
             # Try to get recent data (last 5 days)
             hist = stock.history(period="5d")
-
+            
             # Check if we got any data
             if hist.empty:
                 print("❌ No data available")
                 return False
-
+            
             # Check if we have closing prices
             if 'Close' not in hist.columns or hist['Close'].isna().all():
                 print("❌ No price data")
                 return False
-
+            
             # Get company info to verify it's a real stock
             info = stock.info
-
+            
             # Check if we got meaningful info
             if not info or len(info) < 5:
                 print("❌ Insufficient information")
                 return False
-
+            
             # Successful validation
             company_name = info.get('longName', info.get('shortName', 'Unknown'))
             current_price = hist['Close'].iloc[-1]
             print(f"✅ Valid - {company_name} (₹{current_price:.2f})")
-
+            
             return True
-
+            
         except Exception as e:
-            import traceback
-            print(f"❌ Validation failed: {e}")
-            traceback.print_exc()
+            print(f"❌ Validation failed: {str(e)[:50]}")
             return False
     
     def get_company_info(self, ticker):
@@ -303,8 +278,7 @@ class TickerFinder:
         dict: Company information
         """
         try:
-            session = _get_yf_session()
-            stock = yf.Ticker(ticker, session=session)
+            stock = yf.Ticker(ticker)
             info = stock.info
             
             company_info = {
