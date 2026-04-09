@@ -2,7 +2,7 @@
 This project predicts future stock prices using Geometric Brownian Motion (GBM) and Monte Carlo simulations.
 A detailed 3 month forecast of stock behaviour is obtained through this project.
 ### This prediction tool is for listings on the Indian Stock Market. 
-
+*Demo video is uploaded in this repository, in which the forecast of data and display of visualisations has been carried out for 3 different companies*
 
 ## Concept
 
