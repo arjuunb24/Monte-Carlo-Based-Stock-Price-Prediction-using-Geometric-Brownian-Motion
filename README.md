@@ -1,4 +1,4 @@
-# Monte-Carlo-Based-Stock-Price-Prediction-using-Geometric-Brownian-Motion
+# Monte Carlo Based Stock Price Prediction using Geometric Brownian Motion
 This project predicts future stock prices using Geometric Brownian Motion (GBM) and Monte Carlo simulations.
 A detailed 3 month forecast of stock behaviour is obtained through this project.
 ### This prediction tool is for listings on the Indian Stock Market. 
@@ -74,7 +74,6 @@ Edit `config.py` to customize:
 
 ### Backend:
 - Python
-- Flask (Web Framework)
 - Gunicorn (WSGI Server)
 
 ### AI & Data:
@@ -91,11 +90,9 @@ Edit `config.py` to customize:
 - CSS3
 - JavaScript (Vanilla)
 
-### Session Management:
-- Flask Sessions
-- Browser SessionStorage
-
 ### Libraries:
 - yfinance (Yahoo Finance data fetching)
 - google-generativeai (Gemini API integration)
-- werkzeug (Flask utilities)
+- flask (Web application)
+- gunicorn (Production server)
+- python-dotenv (Environment management)
