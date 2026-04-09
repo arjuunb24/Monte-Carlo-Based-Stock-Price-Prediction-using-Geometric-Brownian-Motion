@@ -1,3 +1,11 @@
+---
+title: Monte Carlo Stock Predictor
+colorFrom: green
+colorTo: blue
+sdk: docker
+pinned: false
+---
+
 # Monte Carlo Based Stock Price Prediction using Geometric Brownian Motion
 This project predicts future stock prices using Geometric Brownian Motion (GBM) and Monte Carlo simulations.
 A detailed 3 month forecast of stock behaviour is obtained through this project.

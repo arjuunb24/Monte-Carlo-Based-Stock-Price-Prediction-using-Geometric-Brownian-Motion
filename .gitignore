@@ -17,6 +17,7 @@ env/
 
 # Plots
 static/plots/*.png
+plot*.png
 
 # OS
 .DS_Store
